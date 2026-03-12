@@ -1,49 +1,40 @@
 <?php
-// 1. Activar reporte de errores para ver qué falla exactamente
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 session_start();
 require_once "config/conexion.php";
 
-if (!isset($_SESSION["id_usuario"])) {
+if (!isset($_SESSION["id"])) {
     header("Location: index.php");
     exit();
 }
 
 $mensaje = "";
 
-// PROCESAR REGISTRO DE PAGO
+// 1. PROCESAR EL REGISTRO DE PAGO
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registrar_pago'])) {
     $id_socio = $_POST['id_socio'];
     $monto = $_POST['monto'];
-    $detalle_pago = "Mensualidad: " . $_POST['mes_pagado'];
-    $fecha = date('Y-m-d H:i:s');
+    $detalle = $_POST['mes_pago']; 
 
-    $sql = "INSERT INTO Pagos (id_socio, monto, fecha_pago, detalle) VALUES (?, ?, ?, ?)";
-    $params = array($id_socio, $monto, $fecha, $detalle_pago);
+    $sql = "INSERT INTO Pagos (id_socio, monto, fecha_pago, detalle) VALUES (?, ?, GETDATE(), ?)";
+    $params = array($id_socio, $monto, $detalle);
+    
     $stmt = sqlsrv_query($conn, $sql, $params);
-
     if ($stmt) {
-        $mensaje = "<div style='background:#dcfce7; color:#166534; padding:15px; border-radius:10px; margin-bottom:20px;'>✅ Pago registrado correctamente.</div>";
+        $mensaje = "<div class='alert alert-success'>💰 Pago registrado con éxito.</div>";
     } else {
-        $mensaje = "<div style='background:#fee2e2; color:#991b1b; padding:15px; border-radius:10px; margin-bottom:20px;'>❌ Error al insertar: " . print_r(sqlsrv_errors(), true) . "</div>";
+        $mensaje = "<div class='alert alert-error'>❌ Error al registrar el pago.</div>";
     }
 }
 
-// OBTENER LISTA DE SOCIOS (Asegúrate que estos nombres coinciden con tu imagen de la tabla Socios)
-$res_socios = sqlsrv_query($conn, "SELECT id_socio, nombre_socio, ap_paterno FROM Socios");
-if ($res_socios === false) {
-    die("Error en consulta de socios: " . print_r(sqlsrv_errors(), true));
-}
+// 2. OBTENER LISTA DE SOCIOS
+$res_socios = sqlsrv_query($conn, "SELECT id_socio, nombre_socio, ap_paterno FROM Socios ORDER BY nombre_socio ASC");
 
-// OBTENER HISTORIAL (Usamos LEFT JOIN para que no falle si la tabla pagos está vacía)
-$query_historial = "SELECT P.monto, P.fecha_pago, P.detalle, S.nombre_socio, S.ap_paterno 
-                    FROM Pagos P 
-                    LEFT JOIN Socios S ON P.id_socio = S.id_socio 
-                    ORDER BY P.id_pago DESC";
-$res_pagos = sqlsrv_query($conn, $query_historial);
+// 3. OBTENER ÚLTIMOS PAGOS
+$sql_historial = "SELECT p.id_pago, p.monto, p.fecha_pago, p.detalle, s.nombre_socio, s.ap_paterno 
+                  FROM Pagos p 
+                  INNER JOIN Socios s ON p.id_socio = s.id_socio 
+                  ORDER BY p.id_pago DESC";
+$res_historial = sqlsrv_query($conn, $sql_historial);
 ?>
 
 <!DOCTYPE html>
@@ -51,71 +42,80 @@ $res_pagos = sqlsrv_query($conn, $query_historial);
 <head>
     <meta charset="UTF-8">
     <title>Pagos | Club Pro</title>
-    <link rel="stylesheet" href="css/estilos.css?v=5.0">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body style="display: flex; background: #f8fafc;">
+<body style="display: flex;">
 
     <div class="sidebar">
         <h2>CLUB PRO</h2>
-        <nav style="flex-grow: 1;">
+        <nav>
             <a href="panel_control.php" class="nav-link">🏠 Inicio</a>
             <a href="socios.php" class="nav-link">👥 Socios</a>
             <a href="pagos.php" class="nav-link active">💰 Pagos</a>
+            <a href="usuarios.php" class="nav-link">🔑 Usuarios</a>
             <a href="logout.php" class="nav-link logout">🚪 Salir</a>
         </nav>
     </div>
 
-    <div class="main" style="width: 100%; padding: 40px;">
-        <h1 style="margin-bottom: 20px;">Gestión de Pagos</h1>
-        
+    <div class="main">
+        <h1>Gestión de Pagos</h1>
         <?php echo $mensaje; ?>
 
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
-            <div class="card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <h3 style="margin-bottom: 15px;">Registrar Cobro</h3>
+        <div style="display: flex; gap: 2rem; align-items: flex-start;">
+            
+            <div class="card" style="flex: 1; max-width: 350px;">
+                <h3>Nuevo Pago</h3>
                 <form method="POST">
-                    <input type="hidden" name="registrar_pago" value="1">
-                    <label style="display:block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">SOCIO</label>
-                    <select name="id_socio" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; margin-bottom:15px;" required>
-                        <option value="">Seleccionar...</option>
-                        <?php while($s = sqlsrv_fetch_array($res_socios, SQLSRV_FETCH_ASSOC)): ?>
-                            <option value="<?php echo $s['id_socio']; ?>">
-                                <?php echo $s['nombre_socio'] . " " . $s['ap_paterno']; ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-
-                    <label style="display:block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">MES</label>
-                    <input type="text" name="mes_pagado" placeholder="Enero 2026" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; margin-bottom:15px;" required>
-
-                    <label style="display:block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">MONTO ($)</label>
-                    <input type="number" step="0.01" name="monto" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; margin-bottom:15px;" required>
-
-                    <button type="submit" class="btn btn-primary" style="width:100%; cursor:pointer;">Guardar Pago</button>
+                    <input type="hidden" name="registrar_pago">
+                    <div class="form-group">
+                        <label style="font-weight:600; display:block; margin-bottom:8px;">Socio</label>
+                        <select name="id_socio" class="form-control-login" required>
+                            <option value="">Seleccione...</option>
+                            <?php if($res_socios): ?>
+                                <?php while($s = sqlsrv_fetch_array($res_socios, SQLSRV_FETCH_ASSOC)): ?>
+                                    <option value="<?php echo $s['id_socio']; ?>">
+                                        <?php echo htmlspecialchars($s['nombre_socio'] . " " . $s['ap_paterno']); ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-weight:600; display:block; margin-bottom:8px;">Detalle / Mes</label>
+                        <input type="text" name="mes_pago" placeholder="Ej: Marzo 2026" class="form-control-login" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-weight:600; display:block; margin-bottom:8px;">Monto ($)</label>
+                        <input type="number" step="0.01" name="monto" placeholder="0.00" class="form-control-login" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%;">Registrar Cobro</button>
                 </form>
             </div>
 
-            <div class="card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <h3 style="margin-bottom: 15px;">Historial Reciente</h3>
-                <table style="width: 100%; border-collapse: collapse;">
+            <div class="card" style="flex: 2;">
+                <h3>Historial Reciente</h3>
+                <table>
                     <thead>
-                        <tr style="text-align: left; font-size: 12px; color: #64748b; border-bottom: 2px solid #f1f5f9;">
-                            <th style="padding: 10px;">SOCIO</th>
-                            <th style="padding: 10px;">MONTO</th>
-                            <th style="padding: 10px;">FECHA</th>
+                        <tr>
+                            <th>Socio</th>
+                            <th>Concepto</th>
+                            <th>Monto</th>
+                            <th>Fecha</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if($res_pagos): ?>
-                            <?php while($p = sqlsrv_fetch_array($res_pagos, SQLSRV_FETCH_ASSOC)): ?>
-                            <tr style="border-bottom: 1px solid #f1f5f9; font-size: 14px;">
-                                <td style="padding: 10px;"><strong><?php echo $p['nombre_socio']; ?></strong></td>
-                                <td style="padding: 10px; color: #10b981; font-weight: bold;">$<?php echo number_format($p['monto'], 2); ?></td>
-                                <td style="padding: 10px; font-size: 12px; color: #64748b;">
-                                    <?php echo ($p['fecha_pago'] instanceof DateTime) ? $p['fecha_pago']->format('d/m/Y') : '---'; ?>
-                                </td>
+                        <?php if($res_historial): ?>
+                            <?php while($p = sqlsrv_fetch_array($res_historial, SQLSRV_FETCH_ASSOC)): ?>
+                            <tr>
+                                <td><strong><?php echo htmlspecialchars($p['nombre_socio'] . " " . $p['ap_paterno']); ?></strong></td>
+                                <td><?php echo htmlspecialchars($p['detalle']); ?></td>
+                                <td style="color:var(--success); font-weight:bold;">$<?php echo number_format($p['monto'], 2); ?></td>
+                                <td><?php echo ($p['fecha_pago'] instanceof DateTime) ? $p['fecha_pago']->format('d/m/Y') : $p['fecha_pago']; ?></td>
                             </tr>
                             <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr><td colspan="4" style="text-align:center;">No hay registros.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>

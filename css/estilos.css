@@ -1,164 +1,133 @@
-/* --- CONFIGURACIÓN MAESTRA --- */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+/* CLUB PRO - Estilos Globales
+    Sistema de Gestión de Socios y Pagos
+*/
 
 :root {
     --primary: #2563eb;
     --primary-hover: #1d4ed8;
-    --secondary: #0f172a; 
-    --success: #10b981;
-    --danger: #ef4444;    
+    --success: #059669;
+    --danger: #dc2626;
     --background: #f8fafc;
-    --white: #ffffff;
+    --card-bg: #ffffff;
     --text-main: #1e293b;
     --text-muted: #64748b;
-    --sidebar-width: 280px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --sidebar-width: 260px;
+    --border-radius: 1rem;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
     background-color: var(--background);
     color: var(--text-main);
     min-height: 100vh;
 }
 
-/* --- ESTILOS EXCLUSIVOS DEL LOGIN --- */
-.login-body {
-    background: linear-gradient(-45deg, #1e293b, #2563eb, #0f172a);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.login-card {
-    background: white;
-    padding: 3rem;
-    border-radius: 2rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    width: 100%;
-    max-width: 420px;
-    text-align: center;
-}
-
-.form-control-login {
-    width: 100%;
-    padding: 1rem;
-    border: 2px solid #f1f5f9;
-    border-radius: 1rem;
-    font-size: 1rem;
-    margin-top: 0.5rem;
-    transition: var(--transition);
-}
-
-.form-control-login:focus {
-    outline: none;
-    border-color: var(--primary);
-    background: #f8faff;
-}
-
-/* --- ESTILOS DEL DASHBOARD (PANEL) --- */
+/* --- Layout Principal --- */
 .sidebar {
     width: var(--sidebar-width);
-    background-color: var(--secondary);
+    background: #0f172a;
+    color: white;
     height: 100vh;
     position: fixed;
-    left: 0;
-    top: 0;
-    padding: 2.5rem 1.5rem;
+    padding: 2rem 1.5rem;
     display: flex;
     flex-direction: column;
-    z-index: 1000;
 }
 
 .sidebar h2 {
-    color: white;
+    font-size: 1.5rem;
     font-weight: 800;
-    font-size: 1.6rem;
-    margin-bottom: 3rem;
-    text-align: center;
+    letter-spacing: -0.5px;
+    margin-bottom: 2.5rem;
+    padding-left: 0.5rem;
+    color: #38bdf8;
 }
 
+.main {
+    margin-left: var(--sidebar-width);
+    padding: 2.5rem;
+    width: calc(100% - var(--sidebar-width));
+}
+
+/* --- Navegación --- */
 .nav-link {
-    display: flex;
-    align-items: center;
-    padding: 1rem 1.2rem;
-    color: #94a3b8;
     text-decoration: none;
-    border-radius: 1rem;
+    color: #94a3b8;
+    padding: 0.8rem 1rem;
+    border-radius: 0.75rem;
     margin-bottom: 0.5rem;
-    font-weight: 600;
-    transition: var(--transition);
+    transition: all 0.3s ease;
+    display: block;
+    font-weight: 500;
 }
 
-.nav-link:hover {
-    background: rgba(255, 255, 255, 0.05);
+.nav-link:hover, .nav-link.active {
+    background: #1e293b;
     color: white;
-    transform: translateX(5px);
 }
 
 .nav-link.active {
     background: var(--primary);
-    color: white;
-    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
-}
-
-/* Sección Cerrar Sesión Roja */
-.logout-container {
-    margin-top: auto;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(255,255,255,0.1);
 }
 
 .nav-link.logout {
+    margin-top: auto;
     color: #fca5a5;
-    background: rgba(239, 68, 68, 0.1);
 }
 
-.nav-link.logout:hover {
-    background: var(--danger);
-    color: white;
-}
-
-/* Contenido Principal */
-.main {
-    margin-left: var(--sidebar-width);
-    padding: 3rem;
-    width: calc(100% - var(--sidebar-width));
-}
-
+/* --- Componentes --- */
 .card {
-    background: var(--white);
-    padding: 2.5rem;
-    border-radius: 1.5rem;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
     margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
 }
 
-/* Botones Generales */
-.btn {
-    display: inline-block;
-    padding: 1rem 2rem;
-    border-radius: 1rem;
+h1 {
+    font-size: 1.875rem;
     font-weight: 700;
-    text-decoration: none;
+    margin-bottom: 2rem;
+    color: #0f172a;
+}
+
+/* --- Formularios --- */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-control-login {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.form-control-login:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+/* --- Botones --- */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: var(--transition);
+    transition: all 0.2s;
     border: none;
+    display: inline-block;
     text-align: center;
 }
 
@@ -170,5 +139,17 @@ body {
 .btn-primary:hover {
     background: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
 }
+
+/* --- Tablas --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    padding: 1rem;
+    color: var(--text-muted);
+    font-weight: 600;
