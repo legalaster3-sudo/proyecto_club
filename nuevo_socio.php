@@ -15,9 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $materno = $_POST['materno'];
     $direccion = $_POST['direccion'];
     $cuota = $_POST['cuota'];
-    $fecha = date('Y-m-d H:i:s'); // Fecha actual para fecha_registro
-
-    // Consulta SQL con los nombres de columna de tu DB
+    $fecha = date('Y-m-d H:i:s'); 
     $sql = "INSERT INTO Socios (nombre_socio, ap_paterno, ap_materno, direccion, fecha_registro, cuota_actual) 
             VALUES (?, ?, ?, ?, ?, ?)";
     

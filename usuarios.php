@@ -2,7 +2,7 @@
 session_start();
 require_once "config/conexion.php";
 
-// Usamos 'id' porque así se llama en tu tabla Usuarios
+
 if (!isset($_SESSION["id"])) {
     header("Location: index.php");
     exit();
@@ -10,13 +10,13 @@ if (!isset($_SESSION["id"])) {
 
 $mensaje = "";
 
-// --- CREAR USUARIO ---
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['crear_usuario'])) {
     $user = $_POST['usuario_nuevo'];
     $pass = password_hash($_POST['password_nuevo'], PASSWORD_DEFAULT); 
     $nom  = $_POST['nombre_real'];
 
-    // Usamos los nombres de columna de tu imagen: usuario, password, nombre
+  
     $sql = "INSERT INTO Usuarios (usuario, password, nombre) VALUES (?, ?, ?)";
     $stmt = sqlsrv_query($conn, $sql, array($user, $pass, $nom));
     
@@ -27,13 +27,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['crear_usuario'])) {
     }
 }
 
-// --- ELIMINAR USUARIO ---
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirmar_eliminar'])) {
     $id_admin = $_SESSION["id"];
     $id_a_borrar = $_POST['id_a_borrar'];
     $pass_confirm = $_POST['pass_admin'];
 
-    // Buscamos por 'id'
+    
     $query_admin = "SELECT password FROM Usuarios WHERE id = ?";
     $stmt_admin = sqlsrv_query($conn, $query_admin, array($id_admin));
     $admin = sqlsrv_fetch_array($stmt_admin, SQLSRV_FETCH_ASSOC);
@@ -47,7 +47,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirmar_eliminar']))
     }
 }
 
-// --- LISTADO (Usando 'id' y 'usuario') ---
 $res_users = sqlsrv_query($conn, "SELECT id, usuario, nombre FROM Usuarios");
 ?>
 

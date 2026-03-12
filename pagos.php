@@ -9,7 +9,7 @@ if (!isset($_SESSION["id"])) {
 
 $mensaje = "";
 
-// 1. PROCESAR EL REGISTRO DE PAGO
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registrar_pago'])) {
     $id_socio = $_POST['id_socio'];
     $monto = $_POST['monto'];
@@ -26,10 +26,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registrar_pago'])) {
     }
 }
 
-// 2. OBTENER LISTA DE SOCIOS
+
 $res_socios = sqlsrv_query($conn, "SELECT id_socio, nombre_socio, ap_paterno FROM Socios ORDER BY nombre_socio ASC");
 
-// 3. OBTENER ÚLTIMOS PAGOS
+
 $sql_historial = "SELECT p.id_pago, p.monto, p.fecha_pago, p.detalle, s.nombre_socio, s.ap_paterno 
                   FROM Pagos p 
                   INNER JOIN Socios s ON p.id_socio = s.id_socio 

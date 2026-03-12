@@ -35,15 +35,9 @@ Club Pro es una aplicación web robusta diseñada para la administración eficie
     * Edita el archivo `config/conexion.php` con tus credenciales de SQL Server.
 4.  **Acceso:**
     * Mueve la carpeta al directorio `htdocs` y accede desde `http://localhost/club-pro`.
-
-## 📸 Capturas de Pantalla
-
-> **Tip:** Puedes agregar imágenes aquí una vez que las subas a tu repositorio.
-> `![Dashboard](link-a-tu-imagen.png)`
-
 ## ✒️ Autor
 
-* **Tu Nombre** - *Desarrollo Inicial* - [TuGitHubUser](https://github.com/tu-usuario)
+* **Tu Nombre** - *Desarrollo Inicial* - [7HONNY](https://github.com/)
 
 ---
 Desarrollado con ❤️ para la gestión deportiva.

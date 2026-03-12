@@ -2,19 +2,17 @@
 session_start();
 require_once "config/conexion.php";
 
-// Verificamos la sesión con el nuevo nombre de la columna PK: 'id'
 if (!isset($_SESSION["id"])) {
     header("Location: index.php");
     exit();
 }
 
-// --- CONSULTAS PARA EL RESUMEN ---
-// 1. Total de Socios
+
 $res_socios = sqlsrv_query($conn, "SELECT COUNT(*) as total FROM Socios");
 $f_socios = sqlsrv_fetch_array($res_socios, SQLSRV_FETCH_ASSOC);
 $total_socios = $f_socios['total'];
 
-// 2. Total Recaudado (Usando tu tabla Pagos)
+
 $res_pagos = sqlsrv_query($conn, "SELECT SUM(monto) as total FROM Pagos");
 $f_pagos = sqlsrv_fetch_array($res_pagos, SQLSRV_FETCH_ASSOC);
 $total_dinero = $f_pagos['total'] ?? 0;

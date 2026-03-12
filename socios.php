@@ -9,7 +9,6 @@ if (!isset($_SESSION["id"])) {
 
 $mensaje = "";
 
-// --- 1. ACCIÓN: ELIMINAR ---
 if (isset($_GET['eliminar'])) {
     $id_del = $_GET['eliminar'];
     $sql = "DELETE FROM Socios WHERE id_socio = ?";
@@ -18,7 +17,7 @@ if (isset($_GET['eliminar'])) {
     }
 }
 
-// --- 2. ACCIÓN: EDITAR (GUARDAR CAMBIOS) ---
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['editar_socio'])) {
     $id = $_POST['id_socio'];
     $nom = $_POST['nombre_socio'];
@@ -35,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['editar_socio'])) {
     }
 }
 
-// --- 3. ACCIÓN: REGISTRAR NUEVO ---
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registrar_socio'])) {
     $sql = "INSERT INTO Socios (nombre_socio, ap_paterno, ap_materno, direccion, fecha_registro, cuota_actual) VALUES (?, ?, ?, ?, GETDATE(), ?)";
     sqlsrv_query($conn, $sql, array($_POST['nombre_socio'], $_POST['ap_paterno'], $_POST['ap_materno'], $_POST['direccion'], $_POST['cuota_actual']));
