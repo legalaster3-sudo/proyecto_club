@@ -1,0 +1,174 @@
+/* --- CONFIGURACIÓN MAESTRA --- */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --secondary: #0f172a; 
+    --success: #10b981;
+    --danger: #ef4444;    
+    --background: #f8fafc;
+    --white: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --sidebar-width: 280px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--background);
+    color: var(--text-main);
+    min-height: 100vh;
+}
+
+/* --- ESTILOS EXCLUSIVOS DEL LOGIN --- */
+.login-body {
+    background: linear-gradient(-45deg, #1e293b, #2563eb, #0f172a);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.login-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+
+.form-control-login {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #f1f5f9;
+    border-radius: 1rem;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    transition: var(--transition);
+}
+
+.form-control-login:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #f8faff;
+}
+
+/* --- ESTILOS DEL DASHBOARD (PANEL) --- */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--secondary);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.sidebar h2 {
+    color: white;
+    font-weight: 800;
+    font-size: 1.6rem;
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.2rem;
+    color: #94a3b8;
+    text-decoration: none;
+    border-radius: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    transform: translateX(5px);
+}
+
+.nav-link.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+}
+
+/* Sección Cerrar Sesión Roja */
+.logout-container {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-link.logout {
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.nav-link.logout:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* Contenido Principal */
+.main {
+    margin-left: var(--sidebar-width);
+    padding: 3rem;
+    width: calc(100% - var(--sidebar-width));
+}
+
+.card {
+    background: var(--white);
+    padding: 2.5rem;
+    border-radius: 1.5rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+
+/* Botones Generales */
+.btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
